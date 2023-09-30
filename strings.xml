@@ -17,16 +17,24 @@
     </p>
   </message>
 
-  <message id="mymoney.readyToPlay">
-    <h2>Ready to play ?</h2>
+  <message id="mymoney.menu">
+    <h2>My money</h2>
   </message>
 
-  <message id="memoney.openWalletsList">
+  <message id="mymoney.openWalletsList">
     Wallets
   </message>
 
-  <message id="hangman.englishWords">
-    English words ({1} words)
+  <message id="mymoney.openCurrenciesList">
+    Currencies
+  </message>
+
+  <message id="mymoney.walletsList">
+    <h2>Wallets</h2>
+  </message>
+
+  <message id="mymoney.currenciesList">
+    <h2>Currencies</h2>
   </message>
 
   <message id="hangman.newGame">New game</message>

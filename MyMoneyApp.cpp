@@ -2,9 +2,11 @@
 
 #include <string>
 
-#include "MyMoneyWidget.h"
+#include "Widgets/MyMoneyWidget.h"
 
-MyMoneyApp::MyMoneyApp(const Wt::WEnvironment& env) : WApplication(env) {
+using namespace Wt;
+
+MyMoneyApp::MyMoneyApp(const WEnvironment& env) : WApplication(env) {
     setTitle("My money");
 
     messageResourceBundle().use(appRoot() + "strings");
@@ -14,6 +16,6 @@ MyMoneyApp::MyMoneyApp(const Wt::WEnvironment& env) : WApplication(env) {
     root()->addNew<MyMoneyWidget>();
 }
 
-std::unique_ptr<Wt::WApplication> createApplication(const Wt::WEnvironment& env) {
+std::unique_ptr<WApplication> createApplication(const WEnvironment& env) {
     return std::make_unique<MyMoneyApp>(env);
 }

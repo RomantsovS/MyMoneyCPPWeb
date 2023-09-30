@@ -9,7 +9,9 @@
 
 #include <vector>
 
+#include "Currency.h"
 #include "User.h"
+#include "Wallet.h"
 
 using UserDatabase = Wt::Auth::Dbo::UserDatabase<AuthInfo>;
 
@@ -21,6 +23,9 @@ class Session {
 
     Wt::Auth::AbstractUserDatabase& users();
     Wt::Auth::Login& login() { return login_; }
+
+    std::vector<Wallet> wallets(size_t limit) const;
+    std::vector<Currency> currencies(size_t limit) const;
 
     /*
      * These methods deal with the currently logged in user

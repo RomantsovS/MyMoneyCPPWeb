@@ -5,14 +5,14 @@
 #include <Wt/WStackedWidget.h>
 #include <Wt/WText.h>
 
+#include "CurrenciesListWidget.h"
 #include "MenuWidget.h"
+#include "WalletsListWidget.h"
 
 using namespace Wt;
 
-MyMoneyWidget::MyMoneyWidget() : main_stack_(addNew<Wt::WStackedWidget>()) {
+MyMoneyWidget::MyMoneyWidget() : main_stack_(addNew<WStackedWidget>()) {
     session_.login().changed().connect(this, &MyMoneyWidget::onAuthEvent);
-
-    addNew<WText>("<h1>My money</h1>");
 
     auto authModel = std::make_unique<Auth::AuthModel>(Session::auth(), session_.users());
     authModel->addPasswordAuth(&Session::passwordAuth());
@@ -46,6 +46,10 @@ void MyMoneyWidget::handleInternalPath(const std::string &internalPath) {
     if (session_.login().loggedIn()) {
         if (internalPath == "/menu")
             showMenu();
+        else if (internalPath == "/walletsList")
+            showWalletList();
+        else if (internalPath == "/currenciesList")
+            showCurrenciesList();
         else
             WApplication::instance()->setInternalPath("/menu", true);
     }
@@ -57,4 +61,22 @@ void MyMoneyWidget::showMenu() {
     }
 
     main_stack_->setCurrentWidget(menu_widget_);
+}
+
+void MyMoneyWidget::showWalletList() {
+    if (!wallets_list_widget_) {
+        wallets_list_widget_ = main_stack_->addNew<WalletsListWidget>(&session_);
+    }
+
+    main_stack_->setCurrentWidget(wallets_list_widget_);
+    wallets_list_widget_->update();
+}
+
+void MyMoneyWidget::showCurrenciesList() {
+    if (!currencies_list_widget_) {
+        currencies_list_widget_ = main_stack_->addNew<CurrenciesListWidget>(&session_);
+    }
+
+    main_stack_->setCurrentWidget(currencies_list_widget_);
+    currencies_list_widget_->update();
 }

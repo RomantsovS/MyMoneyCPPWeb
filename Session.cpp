@@ -34,7 +34,7 @@ class UnixCryptHashFunction : public Auth::HashFunction {
         return crypt(msg.c_str(), md5Salt.c_str());
     }
 
-    bool verify(const std::string& msg, const std::string& salt,
+    bool verify(const std::string& msg, [[maybe_unused]] const std::string& salt,
                 const std::string& hash) const override {
         return crypt(msg.c_str(), hash.c_str()) == hash;
     }
@@ -72,6 +72,8 @@ Session::Session() {
     session_.setConnection(std::move(sqlite3));
 
     session_.mapClass<User>("user");
+    session_.mapClass<Wallet>("wallet");
+    session_.mapClass<Currency>("currency");
     session_.mapClass<AuthInfo>("auth_info");
     session_.mapClass<AuthInfo::AuthIdentityType>("auth_identity");
     session_.mapClass<AuthInfo::AuthTokenType>("auth_token");
@@ -100,7 +102,7 @@ Session::Session() {
 
     Dbo::Transaction transaction(session_);
 
-    using Users = Wt::Dbo::collection<Wt::Dbo::ptr<User>>;
+    using Users = Dbo::collection<Dbo::ptr<User>>;
 
     Users users = session_.find<User>();
 
@@ -127,6 +129,36 @@ Dbo::ptr<User> Session::user() const {
         return user;
     } else
         return Dbo::ptr<User>();
+}
+
+std::vector<Wallet> Session::wallets(size_t limit) const {
+    Dbo::Transaction transaction(session_);
+
+    Wallets wallets = session_.find<Wallet>().limit(limit);
+
+    std::vector<Wallet> result;
+    for (const auto& dbo_wallet : wallets) {
+        result.push_back(*dbo_wallet);
+    }
+
+    transaction.commit();
+
+    return result;
+}
+
+std::vector<Currency> Session::currencies(size_t limit) const {
+    Dbo::Transaction transaction(session_);
+
+    Currencies currencies = session_.find<Currency>().limit(limit);
+
+    std::vector<Currency> result;
+    for (const auto& dbo_currency : currencies) {
+        result.push_back(*dbo_currency);
+    }
+
+    transaction.commit();
+
+    return result;
 }
 
 std::string Session::userName() const {

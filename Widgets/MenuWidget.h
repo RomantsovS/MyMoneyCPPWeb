@@ -7,7 +7,6 @@
 
 namespace Wt {
 class WStackedWidget;
-class WAnchor;
 class WPushButton;
 }  // namespace Wt
 
@@ -17,9 +16,11 @@ class MenuWidget : public Wt::WContainerWidget {
 
    private:
     void openWalletsList();
+    void openCurrenciesList();
 
     Wt::WText *title_ = nullptr;
     Wt::WPushButton *wallets_button_ = nullptr;
+    Wt::WPushButton *currencies_button_ = nullptr;
 };
 
 #endif
