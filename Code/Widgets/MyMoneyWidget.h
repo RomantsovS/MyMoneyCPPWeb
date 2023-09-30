@@ -3,6 +3,7 @@
 
 #include <Wt/WContainerWidget.h>
 
+#include <memory>
 #include <string>
 
 #include "../Session.h"
@@ -15,6 +16,7 @@ class WAnchor;
 class MenuWidget;
 class WalletsListWidget;
 class CurrenciesListWidget;
+class WInteractWidget;
 
 class MyMoneyWidget : public Wt::WContainerWidget {
    public:
@@ -27,6 +29,7 @@ class MyMoneyWidget : public Wt::WContainerWidget {
     void showMenu();
     void showWalletList();
     void showCurrenciesList();
+    void showCurrencyAdd();
 
     Wt::WStackedWidget* main_stack_ = nullptr;
     MenuWidget* menu_widget_ = nullptr;

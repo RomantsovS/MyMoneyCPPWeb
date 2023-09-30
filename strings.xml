@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <messages>
   <message id="Wt.Auth.login-form-info">
-    Hangman keeps track of the best players, and since that could be
-    you, you might want to register. <br/>
+    You might want to register. <br/>
     If you would rather not register for some reason, use the
     <b>guest/guest</b> account.
-  </message>
-
-  <message id="highscore.info">
-    <p>
-      For each game won, you gain 20 points, minus one point for each
-      wrong letter guess. <br />
-
-      For each game lost, you loose 10 points, so you better try hard
-      to guess the word!
-    </p>
   </message>
 
   <message id="mymoney.menu">
@@ -35,6 +24,22 @@
 
   <message id="mymoney.currenciesList">
     <h2>Currencies</h2>
+  </message>
+
+  <message id="mymoney.currency">
+    <h2>Currency</h2>
+  </message>
+
+  <message id="mymoney.add">
+    Add
+  </message>
+
+  <message id="mymoney.save">
+    Save
+  </message>
+
+  <message id="mymoney.name">
+    <h2>Name</h2>
   </message>
 
   <message id="hangman.newGame">New game</message>

@@ -3,6 +3,12 @@ Project(MyMoney)
 
 FIND_PACKAGE(Wt REQUIRED Wt HTTP)
 
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    message(STATUS "CCACHE_FOUND ${CCACHE_FOUND}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+endif(CCACHE_FOUND)
+
 INCLUDE(CheckFunctionExists)
 INCLUDE(CheckLibraryExists)
 

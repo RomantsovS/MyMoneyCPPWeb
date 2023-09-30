@@ -8,7 +8,6 @@
 namespace Wt {
 class WStackedWidget;
 class WPushButton;
-class WTable;
 }  // namespace Wt
 
 class Session;
@@ -16,12 +15,13 @@ class Session;
 class CurrenciesListWidget : public Wt::WContainerWidget {
    public:
     CurrenciesListWidget(Session *session);
-    void update();
+    void add();
+    void edit();
 
    private:
     Session *session_ = nullptr;
     Wt::WContainerWidget *top_panel = nullptr;
-    Wt::WTable *table_ = nullptr;
+    Wt::WPushButton *add_button_ = nullptr;
 };
 
 #endif

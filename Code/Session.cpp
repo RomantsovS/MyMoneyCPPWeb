@@ -146,21 +146,6 @@ std::vector<Wallet> Session::wallets(size_t limit) const {
     return result;
 }
 
-std::vector<Currency> Session::currencies(size_t limit) const {
-    Dbo::Transaction transaction(session_);
-
-    Currencies currencies = session_.find<Currency>().limit(limit);
-
-    std::vector<Currency> result;
-    for (const auto& dbo_currency : currencies) {
-        result.push_back(*dbo_currency);
-    }
-
-    transaction.commit();
-
-    return result;
-}
-
 std::string Session::userName() const {
     if (login_.loggedIn())
         return login_.user().identity(Auth::Identity::LoginName).toUTF8();

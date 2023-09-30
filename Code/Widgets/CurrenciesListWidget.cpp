@@ -1,8 +1,9 @@
 #include "CurrenciesListWidget.h"
 
+#include <Wt/WApplication.h>
 #include <Wt/WHBoxLayout.h>
 #include <Wt/WPushButton.h>
-#include <Wt/WTable.h>
+#include <Wt/WTableView.h>
 #include <Wt/WText.h>
 #include <Wt/WVBoxLayout.h>
 
@@ -23,24 +24,28 @@ CurrenciesListWidget::CurrenciesListWidget(Session *session) : session_(session)
     item_text->setStyleClass("green-box");
     top_hbox->addWidget(std::move(item_text));
 
-    auto item_add = std::make_unique<WText>("Add");
-    item_add->setStyleClass("blue-box");
-    top_hbox->addWidget(std::move(item_add));
+    auto add_button = std::make_unique<WPushButton>(tr("mymoney.add"));
+    add_button_ = add_button.get();
+    add_button_->clicked().connect(this, &CurrenciesListWidget::add);
+    add_button_->setStyleClass("blue-box");
+    top_hbox->addWidget(std::move(add_button));
 
-    auto table = std::make_unique<WTable>();
-    auto table_ = table.get();
-    table_->setStyleClass("green-box");
-    vbox->addWidget(std::move(table));
-
-    table_->elementAt(0, 0)->addNew<WText>("Name");
-    table_->setHeaderCount(1);
+    auto tableView = std::make_unique<WTableView>();
+    tableView->setModel(session_->getQueryModel<Currency>());
+    // tableView->setRowHeaderCount(1);  // treat first column as 'fixed' row headers
+    tableView->setSortingEnabled(false);
+    tableView->setAlternatingRowColors(true);
+    tableView->setRowHeight(28);
+    tableView->setHeaderHeight(28);
+    tableView->setSelectionMode(SelectionMode::Single);
+    tableView->setEditTriggers(EditTrigger::None);
+    vbox->addWidget(std::move(tableView));
 }
 
-void CurrenciesListWidget::update() {
-    auto currencies = session_->currencies(10);
+void CurrenciesListWidget::add() {
+    WApplication::instance()->setInternalPath("/currenciesList/add", true);
+}
 
-    for (auto &currency : currencies) {
-        int row = table_->rowCount();
-        table_->elementAt(row, 0)->addNew<WText>(currency.name());
-    }
+void CurrenciesListWidget::edit() {
+    WApplication::instance()->setInternalPath("/currenciesList/edit", true);
 }

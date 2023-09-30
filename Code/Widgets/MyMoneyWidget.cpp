@@ -6,6 +6,7 @@
 #include <Wt/WText.h>
 
 #include "CurrenciesListWidget.h"
+#include "CurrencyWidget.h"
 #include "MenuWidget.h"
 #include "WalletsListWidget.h"
 
@@ -50,6 +51,8 @@ void MyMoneyWidget::handleInternalPath(const std::string &internalPath) {
             showWalletList();
         else if (internalPath == "/currenciesList")
             showCurrenciesList();
+        else if (internalPath == "/currenciesList/add")
+            showCurrencyAdd();
         else
             WApplication::instance()->setInternalPath("/menu", true);
     }
@@ -78,5 +81,10 @@ void MyMoneyWidget::showCurrenciesList() {
     }
 
     main_stack_->setCurrentWidget(currencies_list_widget_);
-    currencies_list_widget_->update();
+}
+
+void MyMoneyWidget::showCurrencyAdd() {
+    auto current_interact_widget = main_stack_->addNew<CurrencyWidget>(&session_);
+
+    main_stack_->setCurrentWidget(current_interact_widget);
 }

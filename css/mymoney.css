@@ -20,6 +20,13 @@ h1 {
     padding: 3px;
 }
 
+.white-box {
+    background-color: #ffffff;
+    min-height: 30px;
+    text-align: center;
+    padding: 3px;
+}
+
 .blue-box {
     background-color: #65dae8;
     min-height: 30px;
