@@ -1,0 +1,33 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
+Project(MyMoney)
+
+FIND_PACKAGE(Wt REQUIRED Wt HTTP)
+
+INCLUDE(CheckFunctionExists)
+INCLUDE(CheckLibraryExists)
+
+file(GLOB _source_list 
+	LIST_DIRECTORIES false
+	"${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+)
+
+ADD_EXECUTABLE(MyMoney.wt "${_source_list}")
+TARGET_LINK_LIBRARIES(MyMoney.wt Wt::Wt Wt::HTTP Wt::Dbo Wt::DboSqlite3)
+
+# Test whether crypt(3) is provided by libc. If it's not, check if
+# libcrypt exists and if it provides crypt(3).
+CHECK_FUNCTION_EXISTS(crypt CRYPT_EXISTS)
+IF(NOT CRYPT_EXISTS)
+  CHECK_LIBRARY_EXISTS(crypt crypt "" CRYPT_LIB_EXISTS)
+  IF(CRYPT_LIB_EXISTS)
+    SET(CMAKE_REQUIRED_LIBRARIES "crypt")
+    CHECK_FUNCTION_EXISTS(crypt CRYPT_EXISTS)
+  ENDIF(CRYPT_LIB_EXISTS)
+ENDIF(NOT CRYPT_EXISTS)
+
+IF(CRYPT_LIB_EXISTS)
+  TARGET_LINK_LIBRARIES(MyMoney.wt crypt)
+ENDIF(CRYPT_LIB_EXISTS)
+
+INCLUDE_DIRECTORIES(${WT_SOURCE_DIR}/src)
