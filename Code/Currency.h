@@ -19,7 +19,10 @@ class Currency {
         Wt::Dbo::field(a, name_, "name");
     }
 
-    std::string name() const { return name_; }
+    const std::string& getName() const { return name_; }
+    void setName(const std::string& name) { name_ = name; }
+
+    static Wt::Dbo::dbo_traits<Currency>::IdType stringToId(const std::string& s);
 
    private:
     std::string name_;

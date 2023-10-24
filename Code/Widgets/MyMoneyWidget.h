@@ -30,6 +30,7 @@ class MyMoneyWidget : public Wt::WContainerWidget {
     void showWalletList();
     void showCurrenciesList();
     void showCurrencyAdd();
+    void showCurrencyEdit(const std::string id);
 
     Wt::WStackedWidget* main_stack_ = nullptr;
     MenuWidget* menu_widget_ = nullptr;

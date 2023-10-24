@@ -14,7 +14,8 @@
 
 using namespace Wt;
 
-CurrencyWidget::CurrencyWidget(Session *session) : session_(session) {
+CurrencyWidget::CurrencyWidget(Session* session, const std::string& id)
+    : session_(session), id_(id) {
     setContentAlignment(AlignmentFlag::Center);
     setStyleClass("green-box");
 
@@ -27,20 +28,38 @@ CurrencyWidget::CurrencyWidget(Session *session) : session_(session) {
 
     auto save_button = std::make_unique<WPushButton>(tr("mymoney.save"));
     save_button_ = save_button.get();
-    save_button_->clicked().connect(this, &CurrencyWidget::save);
-    save_button_->setStyleClass("blue-box");
+    save_button->clicked().connect(this, &CurrencyWidget::save);
+    save_button->setStyleClass("blue-box");
     top_hbox->addWidget(std::move(save_button));
 
     auto name_edit = std::make_unique<WLineEdit>();
     name_edit_ = name_edit.get();
     name_edit_->setStyleClass("white-box");
+
+    if (!id_.empty()) {
+        auto t = session_->make_transaction();
+        auto id = Currency::stringToId(id_);
+        auto dbo_ptr_ = session_->load<Currency>(id);
+        name_edit_->setText(dbo_ptr_->getName());
+    }
+
     vbox->addWidget(std::move(name_edit));
 }
 
 void CurrencyWidget::save() {
-    auto currency = std::make_unique<Currency>(name_edit_->text().toUTF8());
+    auto t = session_->make_transaction();
 
-    session_->add(std::move(currency));
+    if (id_.empty()) {
+        auto currency = std::make_unique<Currency>(name_edit_->text().toUTF8());
+        session_->add(std::move(currency));
+    } else {
+        auto id = Currency::stringToId(id_);
+        auto dbo_ptr_ = session_->load<Currency>(id);
+        auto object = dbo_ptr_.modify();
+        object->setName(name_edit_->text().toUTF8());
+    }
+
+    t->commit();
 
     WApplication::instance()->setInternalPath("/currenciesList", true);
 }

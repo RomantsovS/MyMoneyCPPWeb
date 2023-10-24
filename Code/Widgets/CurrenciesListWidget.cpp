@@ -13,7 +13,7 @@
 
 using namespace Wt;
 
-CurrenciesListWidget::CurrenciesListWidget(Session *session) : session_(session) {
+CurrenciesListWidget::CurrenciesListWidget(Session* session) : session_(session) {
     setContentAlignment(AlignmentFlag::Center);
     setStyleClass("green-box");
 
@@ -30,16 +30,18 @@ CurrenciesListWidget::CurrenciesListWidget(Session *session) : session_(session)
     add_button_->setStyleClass("blue-box");
     top_hbox->addWidget(std::move(add_button));
 
-    auto tableView = std::make_unique<WTableView>();
-    tableView->setModel(session_->getQueryModel<Currency>());
-    // tableView->setRowHeaderCount(1);  // treat first column as 'fixed' row headers
-    tableView->setSortingEnabled(false);
-    tableView->setAlternatingRowColors(true);
-    tableView->setRowHeight(28);
-    tableView->setHeaderHeight(28);
-    tableView->setSelectionMode(SelectionMode::Single);
-    tableView->setEditTriggers(EditTrigger::None);
-    vbox->addWidget(std::move(tableView));
+    auto table_view = std::make_unique<WTableView>();
+    table_view_ = table_view.get();
+    table_view_->setModel(session_->getQueryModel<Currency>());
+    // table_view->setRowHeaderCount(1);  // treat first column as 'fixed' row headers
+    table_view_->setSortingEnabled(false);
+    table_view_->setAlternatingRowColors(true);
+    table_view_->setRowHeight(28);
+    table_view_->setHeaderHeight(28);
+    table_view_->setSelectionMode(SelectionMode::Single);
+    table_view_->setEditTriggers(EditTrigger::None);
+    table_view_->doubleClicked().connect(this, &CurrenciesListWidget::edit);
+    vbox->addWidget(std::move(table_view));
 }
 
 void CurrenciesListWidget::add() {
@@ -47,5 +49,11 @@ void CurrenciesListWidget::add() {
 }
 
 void CurrenciesListWidget::edit() {
-    WApplication::instance()->setInternalPath("/currenciesList/edit", true);
+    std::string id;
+    for (const auto& index : table_view_->selectedIndexes()) {
+        Dbo::QueryModel<Dbo::ptr<Currency>>* item =
+            static_cast<Dbo::QueryModel<Dbo::ptr<Currency>>*>(table_view_->model().get());
+        id = std::to_string(item->resultRow(index.row()).id());
+    }
+    WApplication::instance()->setInternalPath("/currenciesList/edit/" + id, true);
 }

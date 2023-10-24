@@ -6,7 +6,6 @@
 #include <Wt/Dbo/QueryModel.h>
 #include <Wt/Dbo/Session.h>
 #include <Wt/Dbo/backend/Sqlite3.h>
-#include <Wt/Dbo/ptr.h>
 
 #include <memory>
 #include <vector>
@@ -40,11 +39,21 @@ class Session {
         return model;
     }
 
+    std::unique_ptr<Wt::Dbo::Transaction> make_transaction() {
+        return std::make_unique<Wt::Dbo::Transaction>(session_);
+    }
+
     template <typename T>
     void add(std::unique_ptr<T>&& obj) const {
-        Wt::Dbo::Transaction transaction(session_);
         session_.add(std::move(obj));
     }
+
+    template <typename T>
+    Wt::Dbo::ptr<T> load(typename Wt::Dbo::dbo_traits<T>::IdType id) const {
+        return session_.load<T>(id);
+    }
+
+    void update(Wt::Dbo::ptr<Currency>::mutator&&) const { Wt::Dbo::Transaction t(session_); }
 
     /*
      * These methods deal with the currently logged in user
@@ -55,11 +64,11 @@ class Session {
     static const Wt::Auth::AbstractPasswordService& passwordAuth();
 
    private:
+    Wt::Dbo::ptr<User> user() const;
+
     mutable Wt::Dbo::Session session_;
     std::unique_ptr<UserDatabase> users_;
     Wt::Auth::Login login_;
-
-    Wt::Dbo::ptr<User> user() const;
 };
 
 #endif

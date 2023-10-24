@@ -2,8 +2,11 @@
 
 #include <Wt/Auth/AuthWidget.h>
 #include <Wt/WApplication.h>
+#include <Wt/WLogger.h>
 #include <Wt/WStackedWidget.h>
 #include <Wt/WText.h>
+
+#include <stdexcept>
 
 #include "CurrenciesListWidget.h"
 #include "CurrencyWidget.h"
@@ -27,6 +30,8 @@ MyMoneyWidget::MyMoneyWidget() : main_stack_(addNew<WStackedWidget>()) {
 
     main_stack_->setStyleClass("gamestack");
 
+    WApplication::instance()->setInternalPath("/menu", true);
+
     WApplication::instance()->internalPathChanged().connect(this,
                                                             &MyMoneyWidget::handleInternalPath);
 
@@ -44,6 +49,8 @@ void MyMoneyWidget::onAuthEvent() {
 }
 
 void MyMoneyWidget::handleInternalPath(const std::string &internalPath) {
+    Wt::WApplication *app = Wt::WApplication::instance();
+
     if (session_.login().loggedIn()) {
         if (internalPath == "/menu")
             showMenu();
@@ -53,8 +60,10 @@ void MyMoneyWidget::handleInternalPath(const std::string &internalPath) {
             showCurrenciesList();
         else if (internalPath == "/currenciesList/add")
             showCurrencyAdd();
-        else
-            WApplication::instance()->setInternalPath("/menu", true);
+        else if (internalPath.find("/currenciesList/edit") != std::string::npos) {
+            showCurrencyEdit(app->internalPathNextPart("/currenciesList/edit/"));
+        } else
+            throw std::runtime_error("unknown internal path");
     }
 }
 
@@ -84,7 +93,13 @@ void MyMoneyWidget::showCurrenciesList() {
 }
 
 void MyMoneyWidget::showCurrencyAdd() {
-    auto current_interact_widget = main_stack_->addNew<CurrencyWidget>(&session_);
+    auto current_interact_widget = main_stack_->addNew<CurrencyWidget>(&session_, "");
+
+    main_stack_->setCurrentWidget(current_interact_widget);
+}
+
+void MyMoneyWidget::showCurrencyEdit(const std::string id) {
+    auto current_interact_widget = main_stack_->addNew<CurrencyWidget>(&session_, id);
 
     main_stack_->setCurrentWidget(current_interact_widget);
 }
