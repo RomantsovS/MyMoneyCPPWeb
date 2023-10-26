@@ -1,0 +1,7 @@
+<server>
+    <application-settings location="*">
+        <log-file>build/log.log</log-file>
+        <log-config>*</log-config>
+        <progressive-bootstrap>true</progressive-bootstrap>
+    </application-settings>
+</server>
