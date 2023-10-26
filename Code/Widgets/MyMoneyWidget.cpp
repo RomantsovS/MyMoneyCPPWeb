@@ -87,6 +87,8 @@ void MyMoneyWidget::showWalletList() {
 void MyMoneyWidget::showCurrenciesList() {
     if (!currencies_list_widget_) {
         currencies_list_widget_ = main_stack_->addNew<CurrenciesListWidget>(&session_);
+    } else {
+        currencies_list_widget_->update();
     }
 
     main_stack_->setCurrentWidget(currencies_list_widget_);

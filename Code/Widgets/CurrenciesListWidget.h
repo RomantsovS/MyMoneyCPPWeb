@@ -16,6 +16,9 @@ class Session;
 class CurrenciesListWidget : public Wt::WContainerWidget {
    public:
     CurrenciesListWidget(Session *session);
+    
+    void update();
+
     void add();
     void edit();
 

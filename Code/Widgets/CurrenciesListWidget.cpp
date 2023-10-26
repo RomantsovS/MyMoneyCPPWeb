@@ -44,6 +44,10 @@ CurrenciesListWidget::CurrenciesListWidget(Session* session) : session_(session)
     vbox->addWidget(std::move(table_view));
 }
 
+void CurrenciesListWidget::update() {
+    static_cast<Wt::Dbo::QueryModel<Wt::Dbo::ptr<Currency>>*>(table_view_->model().get())->reload();
+}
+
 void CurrenciesListWidget::add() {
     WApplication::instance()->setInternalPath("/currenciesList/add", true);
 }
@@ -55,5 +59,6 @@ void CurrenciesListWidget::edit() {
             static_cast<Dbo::QueryModel<Dbo::ptr<Currency>>*>(table_view_->model().get());
         id = std::to_string(item->resultRow(index.row()).id());
     }
+    log("debug") << " starting edit currency id:" << id;
     WApplication::instance()->setInternalPath("/currenciesList/edit/" + id, true);
 }
